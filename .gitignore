@@ -1,0 +1,34 @@
+# secrets
+.env
+.env.*
+!.env.example
+*.key
+keys.txt
+*keys.txt
+
+# python
+__pycache__/
+*.py[cod]
+venv/
+.venv/
+*.egg-info/
+
+# data & artefacts
+*.db
+*.sqlite
+*.sqlite3
+*.log
+logs/
+output/
+data/
+dist/
+build/
+cookies/
+*.exe
+*.zip
+
+# os / editors
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/

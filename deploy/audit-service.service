@@ -1,0 +1,16 @@
+# systemd-юнит для Ubuntu VPS. Положить в /etc/systemd/system/audit-service.service
+# Затем: sudo systemctl daemon-reload && sudo systemctl enable --now audit-service
+[Unit]
+Description=Usability audit service (FastAPI + Claude Code)
+After=network-online.target
+
+[Service]
+User=audit
+WorkingDirectory=/opt/audit-service
+EnvironmentFile=/opt/audit-service/.env
+ExecStart=/opt/audit-service/venv/bin/uvicorn app:app --host 127.0.0.1 --port 8080
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

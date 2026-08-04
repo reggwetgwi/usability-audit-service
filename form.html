@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Бриф на аудит юзабилити сайта</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #0F0B0B; --fg: #FFFFFF; --dim: #d2c7c4; --muted: #a3908c; --ph: #887a77;
+    --primary: #E1281B; --primary-dk: #B01008; --border: rgba(255,255,255,.12);
+    --input: #151010; --card: rgba(23,17,17,.75); --footer: #120e0e; --ok-card: #1f1110;
+  }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    font-family: 'Manrope', system-ui, sans-serif; background: var(--bg); color: var(--fg);
+    font-size: 16px; line-height: 1.55; min-height: 100vh; overflow-x: hidden;
+  }
+  ::selection { background: var(--primary); color: #fff; }
+  .blobs { pointer-events: none; position: fixed; inset: 0; opacity: .7; z-index: 0; }
+  .blobs i { position: absolute; border-radius: 50%; display: block; }
+  .blobs .b1 { right: -5rem; top: -5rem; width: 36rem; height: 36rem; background: #5c1512; filter: blur(130px); }
+  .blobs .b2 { left: -5rem; bottom: -18rem; width: 42rem; height: 42rem; background: #39110e; filter: blur(140px); }
+  .wrap { position: relative; z-index: 1; max-width: 1440px; margin: 0 auto; padding: 32px 40px; }
+  .mono { font-family: 'Roboto Mono', monospace; font-size: 14px; text-transform: uppercase; letter-spacing: .12em; color: var(--muted); }
+  header.top { display: flex; justify-content: space-between; align-items: center; gap: 16px; border-bottom: 1px solid var(--border); padding-bottom: 28px; }
+  header.top img { height: 44px; width: auto; display: block; }
+  .grid { display: grid; gap: 48px; padding: 80px 0; }
+  @media (min-width: 1024px) { .grid { grid-template-columns: minmax(330px,.82fr) minmax(0,1.18fr); gap: 80px; } }
+  h1 {
+    font-size: clamp(3.25rem, 7vw, 6.5rem); font-weight: 500; line-height: .91;
+    letter-spacing: -.045em; max-width: 12ch;
+  }
+  .intro { margin-top: 32px; max-width: 24rem; font-size: 15px; line-height: 1.85; color: var(--dim); }
+  .sharebox {
+    margin-top: 24px; max-width: 24rem; border: 1px solid rgba(225,40,27,.5); background: var(--input);
+    padding: 12px 16px; font-family: 'Roboto Mono', monospace; font-size: 15px; line-height: 1.5;
+    color: #e4d4d1; word-break: break-all;
+  }
+  .sharebox-label { display: block; font-size: 12px; text-transform: uppercase; letter-spacing: .1em; color: var(--muted); margin-bottom: 6px; }
+  .form-head { display: flex; justify-content: space-between; gap: 24px; margin-bottom: 24px; flex-wrap: wrap; }
+  form.card, .ok-card { border: 1px solid var(--border); background: var(--card); backdrop-filter: blur(6px); }
+  .row { display: grid; grid-template-columns: 32px minmax(0,1fr); gap: 20px; padding: 28px; border-top: 1px solid var(--border); }
+  .row:first-child { border-top: none; }
+  .num { font-family: 'Roboto Mono', monospace; font-size: 12px; line-height: 1.9; color: var(--primary); }
+  label { display: block; font-size: 20px; font-weight: 600; line-height: 1.35; letter-spacing: -.03em; }
+  .hint { margin-top: 6px; font-size: 14px; line-height: 1.45; color: var(--muted); }
+  input, textarea {
+    margin-top: 20px; display: block; width: 100%; border: 1px solid var(--border);
+    background: var(--input); padding: 12px 16px; font: inherit; font-size: 14px;
+    line-height: 1.6; color: var(--fg); resize: none;
+  }
+  input::placeholder, textarea::placeholder { color: var(--ph); }
+  input:focus, textarea:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 1px var(--primary); }
+  .pair { display: grid; gap: 20px; }
+  @media (min-width: 640px) { .pair { grid-template-columns: 1fr 1fr; } }
+  .foot { display: flex; flex-direction: column; gap: 20px; border-top: 1px solid var(--border); background: var(--footer); padding: 28px; }
+  @media (min-width: 640px) { .foot { flex-direction: row; align-items: center; justify-content: space-between; } }
+  .err { font-size: 12px; line-height: 1.6; color: #ff6a5a; max-width: 20rem; min-height: 1em; }
+  button.submit {
+    display: inline-flex; align-items: center; justify-content: center; gap: 16px;
+    min-width: 208px; background: var(--primary); color: #fff; border: none; cursor: pointer;
+    padding: 16px 24px; font: inherit; font-size: 14px; font-weight: 700; letter-spacing: -.02em;
+    transition: transform .15s, background .15s;
+  }
+  button.submit:hover { transform: translateY(-2px); background: var(--primary-dk); }
+  button.submit:disabled { opacity: .6; cursor: wait; transform: none; }
+  .arrow { transition: transform .15s; }
+  button.submit:hover .arrow { transform: translateX(4px); }
+  /* honeypot: вне экрана, для людей не существует */
+  .hp { position: absolute; left: -9999px; top: auto; width: 1px; height: 1px; overflow: hidden; }
+  .ok-card { border-color: rgba(225,40,27,.6); background: var(--ok-card); padding: 40px; min-height: 580px; display: flex; flex-direction: column; justify-content: space-between; }
+  .ok-badge { width: 48px; height: 48px; border-radius: 50%; background: var(--primary); display: grid; place-items: center; font-size: 22px; font-weight: 700; }
+  .ok-card h2 { margin-top: 32px; font-size: 48px; font-weight: 500; line-height: 1.02; letter-spacing: -.04em; max-width: 18ch; }
+  .ok-card p { margin-top: 20px; max-width: 28rem; font-size: 15px; line-height: 1.85; color: var(--dim); }
+  .again { margin-top: 32px; display: inline-flex; gap: 12px; align-items: center; background: none; border: none; border-bottom: 1px solid var(--primary); padding-bottom: 8px; color: var(--fg); font: inherit; font-size: 14px; font-weight: 600; cursor: pointer; width: fit-content; }
+  .again:hover { opacity: .7; }
+  /* методология */
+  .method { border-top: 1px solid var(--border); padding: 80px 0; display: grid; gap: 40px; }
+  @media (min-width: 1024px) { .method { grid-template-columns: minmax(330px,.82fr) minmax(0,1.18fr); gap: 80px; } }
+  .method h2 { font-size: clamp(2.25rem, 4vw, 4rem); font-weight: 500; line-height: .98; letter-spacing: -.045em; max-width: 14ch; }
+  .method .lead { max-width: 42rem; font-size: 15px; line-height: 1.85; color: var(--dim); }
+  .stages { margin-top: 40px; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+  .stage { padding: 28px 0; border-top: 1px solid var(--border); display: grid; gap: 12px; }
+  .stage:first-child { border-top: none; }
+  @media (min-width: 640px) { .stage { grid-template-columns: 92px 1fr; gap: 24px; } }
+  .stage .tag { font-family: 'Roboto Mono', monospace; font-size: 14px; text-transform: uppercase; letter-spacing: .14em; color: var(--primary); }
+  .stage h3 { font-size: 20px; font-weight: 600; line-height: 1.35; letter-spacing: -.03em; }
+  .stage p { margin-top: 12px; font-size: 14px; line-height: 1.75; color: var(--dim); }
+  @media (max-width: 640px) { .wrap { padding: 20px; } .row, .foot { padding: 20px; } }
+</style>
+</head>
+<body>
+<div class="blobs" aria-hidden="true"><i class="b1"></i><i class="b2"></i></div>
+<div class="wrap">
+
+  <header class="top">
+    <div class="mono">LOGO</div>
+    <div class="mono" style="text-align:right;">Бриф на аудит юзабилити сайта</div>
+  </header>
+
+  <div class="grid">
+    <section>
+      <h1>Аудит юзабилити сайта</h1>
+      <p class="intro">Ответьте на несколько вопросов — это даст нам контекст для вдумчивого
+      аудита, а не набора общих рекомендаций. Аудит будет реализован в течение 1&nbsp;часа
+      в формате презентации.</p>
+      <p class="sharebox"><span class="sharebox-label">Где забрать файл</span>
+      \\SERVER\Share\Audits</p>
+    </section>
+
+    <section>
+      <div class="form-head">
+        <span class="mono">Пожалуйста, заполните поля</span>
+        <span class="mono">~ 4 минуты</span>
+      </div>
+
+      <form class="card" id="brief" novalidate>
+        <div class="row">
+          <span class="num">01</span>
+          <div>
+            <label for="site">Ссылка на сайт</label>
+            <p class="hint">Главный сайт или конкретная посадочная страница</p>
+            <input id="site" name="site" type="url" required placeholder="https://ваш-сайт.ru">
+          </div>
+        </div>
+        <div class="row">
+          <span class="num">02</span>
+          <div>
+            <label for="niche">Описание ниши и особенностей деятельности компании</label>
+            <p class="hint">Чем занимаетесь, что отличает вас от конкурентов</p>
+            <textarea id="niche" name="niche" rows="3" placeholder="Например: производим мебель на заказ для частных интерьеров…"></textarea>
+          </div>
+        </div>
+        <div class="row">
+          <span class="num">03</span>
+          <div>
+            <label for="audience">Целевая аудитория и её особенности</label>
+            <p class="hint">Кому вы продаёте и как эти люди выбирают</p>
+            <textarea id="audience" name="audience" rows="3" placeholder="Возраст, задачи, сомнения, критерии выбора…"></textarea>
+          </div>
+        </div>
+        <div class="row">
+          <span class="num">04</span>
+          <div>
+            <label for="comments">Комментарии, детали и пожелания к аудиту</label>
+            <p class="hint">Необязательно — укажите цели, прошлый опыт, ограничения и точки, на которые важно посмотреть особенно внимательно</p>
+            <textarea id="comments" name="comments" rows="3" placeholder="Например: проверьте путь до заявки на мобильной версии…"></textarea>
+          </div>
+        </div>
+        <div class="row">
+          <span class="num">05</span>
+          <div class="pair">
+            <div>
+              <label for="name">Имя</label>
+              <input id="name" name="name" required autocomplete="name" placeholder="Как в Zulip">
+            </div>
+            <div>
+              <label for="phone">Telegram / Max</label>
+              <input id="phone" name="phone" type="tel" required autocomplete="tel" placeholder="Ссылка на аккаунт или номер">
+            </div>
+          </div>
+        </div>
+        <div class="hp" aria-hidden="true">
+          <label>Не заполняйте это поле</label>
+          <input name="xtrap9" type="text" tabindex="-1" autocomplete="one-time-code">
+        </div>
+        <div class="foot">
+          <p class="err" id="err" role="alert"></p>
+          <button class="submit" type="submit" id="go"><span id="golabel">Отправить заявку</span> <span class="arrow">&#8594;</span></button>
+        </div>
+      </form>
+
+      <div class="ok-card" id="done" style="display:none;">
+        <div>
+          <div class="ok-badge">&#10003;</div>
+          <h2>Заявка уже у нас.</h2>
+          <p>Спасибо за подробности. Мы прочитаем контекст и вернёмся с дальнейшими шагами.</p>
+        </div>
+        <button class="again" type="button" id="again">Отправить ещё одну заявку <span class="arrow">&#8594;</span></button>
+      </div>
+    </section>
+  </div>
+
+  <section class="method">
+    <div><h2>Методология проведения аудита</h2></div>
+    <div>
+      <p class="lead">Аудит строится на трёх последовательных этапах, каждый из которых формирует базу для следующего.</p>
+      <div class="stages">
+        <article class="stage">
+          <p class="tag">Этап 01</p>
+          <div>
+            <h3>Исследование ниши и целевой аудитории</h3>
+            <p>Проводится до анализа скриншотов. Модель бизнеса клиента — тип продаж, средний чек
+            и тип решения о покупке — определяется по главной странице и фиксируется как отправная
+            точка. Портрет аудитории собирается по модели JTBD через поиск в открытых источниках:
+            ядро, задачи, триггеры, критерии выбора, страхи и цикл решения.</p>
+            <p>Данные СНГ приоритетны над западными: рынок отличается привычками оплаты, логистикой
+            и доверием. Каждое замечание в отчёте привязывается к конкретному критерию выбора
+            аудитории — иначе оно превращается во вкусовщину.</p>
+          </div>
+        </article>
+        <article class="stage">
+          <p class="tag">Этап 02</p>
+          <div>
+            <h3>Анализ конкурентов</h3>
+            <p>Анализируем 8–10 сайтов рынка СНГ, чтобы определить, что является нормой рынка,
+            а что — конкурентным преимуществом. Без этого замечания становятся абстрактными
+            требованиями из учебника.</p>
+            <p>По матрице «элемент × конкурент» фиксируются стандарт рынка — есть у 6 и более
+            из 10, лидерская практика — сильные решения у 1–3 лучших, и дыры рынка — то, что
+            нужно целевой аудитории, но нет ни у кого. Маркетплейсы в подборку не входят,
+            но анализируются отдельно как формирователь ожиданий пользователя.</p>
+          </div>
+        </article>
+        <article class="stage">
+          <p class="tag">Этап 03</p>
+          <div>
+            <h3>Эвристический анализ</h3>
+            <p>Анализ опирается на 10 эвристик Нильсена и законы восприятия: Хика, Миллера,
+            Фиттса, Джейкоба, Ресторфф, Теслера, Гештальт и другие. Ссылка на закон приводится
+            только там, где она применима, и не более одного раза на замечание.</p>
+            <p>Сначала формулируется проблема пользователя, затем — закон как обоснование.
+            Ключевой принцип: сложность не исчезает, а переносится на систему,
+            а не на пользователя.</p>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<script>
+const form = document.getElementById('brief');
+const err = document.getElementById('err');
+const go = document.getElementById('go');
+const golabel = document.getElementById('golabel');
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  err.textContent = '';
+  const fd = new FormData(form);
+  const site = (fd.get('site') || '').toString().trim();
+  const name = (fd.get('name') || '').toString().trim();
+  const phone = (fd.get('phone') || '').toString().trim();
+  if (!site) { err.textContent = 'Укажите ссылку на сайт.'; return; }
+  if (!name || !phone) { err.textContent = 'Укажите имя и телефон — иначе нам некуда вернуться с результатом.'; return; }
+  go.disabled = true;
+  golabel.textContent = 'Отправляем…';
+  try {
+    const r = await fetch('/audit', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-Auth-Token': '{{TOKEN}}' },
+      body: JSON.stringify({
+        url: site,
+        contact: name + ', ' + phone,
+        niche: (fd.get('niche') || '').toString(),
+        audience: (fd.get('audience') || '').toString(),
+        comments: (fd.get('comments') || '').toString(),
+        xtrap9: (fd.get('xtrap9') || '').toString(),
+      }),
+    });
+    if (r.status === 429) { throw new Error('На сегодня лимит заявок исчерпан — попробуйте завтра или напишите нам напрямую.'); }
+    if (!r.ok) {
+      let d = null; try { d = await r.json(); } catch (_) {}
+      throw new Error((d && d.detail) || 'Не удалось отправить заявку. Проверьте ссылку и попробуйте ещё раз.');
+    }
+    form.reset();
+    form.style.display = 'none';
+    document.getElementById('done').style.display = 'flex';
+  } catch (ex) {
+    err.textContent = ex.message || 'Не удалось отправить заявку. Проверьте соединение и попробуйте ещё раз.';
+  } finally {
+    go.disabled = false;
+    golabel.textContent = 'Отправить заявку';
+  }
+});
+document.getElementById('again').addEventListener('click', () => {
+  document.getElementById('done').style.display = 'none';
+  form.style.display = 'block';
+});
+</script>
+</body>
+</html>
